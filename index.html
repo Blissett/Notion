@@ -1,1 +1,51 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Trading Command Center</title><link rel="stylesheet" href="dashboard.css"></head><body><div class="app"><aside><div class="brand"><div class="logo">🧭</div><div><h1>Command Center</h1><p>Hosted dashboard build</p></div></div><div class="group">Daily Command</div><button class="nav" data-section="overview">🧭 Overview</button><button class="nav" data-section="daily">Daily Summary</button><button class="nav" data-section="gate">🚦 Gate</button><button class="nav" data-section="exceptions">🚨 Exceptions</button><button class="nav" data-section="watchlist">👀 Watchlist</button><button class="nav" data-section="ready">✅ Ready Trades</button><button class="nav" data-section="trades">📈 Trades / Reconciliation</button><button class="nav" data-section="alerts">🔔 Alerts / Parsers</button><button class="nav" data-section="testing">🧪 Testing Mode</button><button class="nav" data-section="foundation">🏛️ Foundation</button></aside><main><div class="top"><div><h2 id="title">Loading</h2><p id="subtitle"></p></div><div class="pill">Manual-submit only • No live auto-trading</div></div><section class="cards"><div class="card"><div class="label">Gate</div><div class="value red">Red</div><div class="hint">Build/test fallback</div></div><div class="card"><div class="label">Exceptions</div><div class="value">4</div><div class="hint">Controlled blockers</div></div><div class="card"><div class="label">Ready</div><div class="value">0</div><div class="hint">No ready trades</div></div><div class="card"><div class="label">Open</div><div class="value">2</div><div class="hint">HOOD, AAPL</div></div><div class="card"><div class="label">Alerts</div><div class="value">2</div><div class="hint">Examples needed</div></div><div class="card"><div class="label">Mode</div><div class="value">Test</div><div class="hint">Not go-live</div></div></section><section class="work"><div class="panel"><div class="ph"><h3 id="panelTitle"></h3><span class="badge" id="badge"></span></div><div id="content"></div></div><div class="panel"><div class="ph"><h3>Next Actions</h3><span class="badge">Safe only</span></div><div id="actions"></div></div></section></main></div><script src="dashboard.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Trading Command Center</title>
+<style>
+:root{--bg:#07140f;--panel:#0e2118;--card:#123524;--line:#284d39;--green:#2f8a5b;--text:#eef7f0;--muted:#a8c6b4;--red:#ffb4b4;--blue:#8dc7ff;--yellow:#fff3bd}*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}header{padding:22px 24px;background:#10281d;border-bottom:1px solid #26553d;position:sticky;top:0;z-index:2}h1{margin:0;font-size:24px}.sub{color:var(--muted);margin-top:6px}.layout{display:grid;grid-template-columns:245px 1fr;min-height:calc(100vh - 78px)}nav{background:#081b13;border-right:1px solid var(--line);padding:16px;position:sticky;top:78px;height:calc(100vh - 78px)}nav button{width:100%;text-align:left;margin-bottom:8px;background:#10281d;color:var(--text);border:1px solid var(--line);padding:11px;border-radius:10px;cursor:pointer}nav button.active{background:var(--green)}main{padding:20px;display:grid;gap:16px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.card{background:var(--card);border:1px solid #2d6b49;border-radius:12px;padding:16px}.card b{display:block;font-size:26px;margin-top:8px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 16px}.toolbar button{background:#173f2b;color:var(--text);border:1px solid #377a55;padding:9px 12px;border-radius:9px;cursor:pointer}.toolbar button.active{background:var(--green)}table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:10px;border-bottom:1px solid #234632;text-align:left;vertical-align:top}th{color:#b7d5c2}.status{border-radius:999px;padding:3px 8px;display:inline-block}.Blocked{background:#5b1f1f;color:#ffd6d6}.Ready{background:#174d93;color:#d8ecff}.Watching{background:#64510d;color:#fff3bd}.small{font-size:12px;color:var(--muted)}.reason{max-width:430px}.danger{color:var(--red)}.ok{color:#8ff0ad}a{color:var(--blue)}.hidden{display:none}.callout{padding:14px;border-radius:12px;background:#10281d;border:1px solid var(--line);margin:10px 0}@media(max-width:800px){.layout{grid-template-columns:1fr}nav{position:static;height:auto}.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><h1>🧭 Trading Command Center</h1><div class="sub">One dashboard link · Gate → Watchlist → OptionsPlay 360 → Ready review</div></header>
+<div class="layout">
+<nav>
+ <button class="active" onclick="showSection('overview',this)">🧭 Overview</button>
+ <button onclick="showSection('optionsplay',this)">📈 OptionsPlay 360 Ideas</button>
+ <button onclick="showSection('workflow',this)">✅ Daily Workflow</button>
+ <button onclick="showSection('safety',this)">🔒 Safety Rules</button>
+</nav>
+<main>
+<section id="overview">
+ <div class="cards">
+  <div class="card">Gate<b id="gateStatus">Loading</b><div id="gateMsg" class="small"></div></div>
+  <div class="card">OptionsPlay Ideas<b id="opCount">0</b><div class="small">From Watchlist snapshot</div></div>
+  <div class="card">Ready<b id="readyCount">0</b><div class="small">Manual review only</div></div>
+  <div class="card">Blocked<b id="blockedCount">0</b><div class="small">Do not submit</div></div>
+ </div>
+ <div class="panel"><h2>Daily Summary</h2><p>Use this dashboard as the single starting point. It displays the latest dashboard-data.json snapshot and keeps OptionsPlay 360 ideas inside the main dashboard.</p><div class="callout"><b>Important:</b> Dashboard display does not mean trade approval. Gate, score, risk, exact broker ticket, and Bernard manual approval are still required.</div></div>
+</section>
+<section id="optionsplay" class="hidden">
+ <div class="panel">
+  <h2>OptionsPlay 360 Ideas</h2>
+  <div class="small">OptionsPlay 360 → Watchlist → dashboard-data.json → main dashboard. Snapshot only; no broker orders.</div>
+  <div class="toolbar"><button class="active" onclick="setFilter('all',this)">All</button><button onclick="setFilter('Ready',this)">Ready</button><button onclick="setFilter('Blocked',this)">Blocked</button><button onclick="setFilter('Watching',this)">Watching</button></div>
+  <table><thead><tr><th>Ticker</th><th>Status</th><th>Score</th><th>Broker</th><th>Setup</th><th>Quote</th><th>Reason / next action</th></tr></thead><tbody id="rows"></tbody></table>
+ </div>
+</section>
+<section id="workflow" class="hidden"><div class="panel"><h2>Daily Workflow</h2><ol><li>Check today’s VectorVest gate.</li><li>If gate is Red: no new tactical trades.</li><li>If Yellow/Green: review current Watchlist ideas.</li><li>Confirm score, risk fit, earnings/news, exit plan, and exact broker ticket.</li><li>Bernard manually approves/submits. Dashboard never submits orders.</li></ol></div></section>
+<section id="safety" class="hidden"><div class="panel"><h2>Safety Lock</h2><ul><li>Signal does not equal Ready.</li><li>Ready does not equal submitted.</li><li>Submitted does not equal Open.</li><li>Only Filled/Executed broker confirmation can become Open.</li><li>All broker orders are manually submitted by Bernard.</li></ul></div></section>
+</main>
+</div>
+<script>
+let DATA={optionsPlay360Ideas:[],gate:{status:'Needs data',message:''}},filter='all';
+async function load(){try{const r=await fetch('dashboard-data.json?ts='+Date.now());DATA=await r.json()}catch(e){console.warn(e);DATA.gate={status:'Snapshot missing',message:'Upload dashboard-data.json beside index.html'}};render()}
+function money(v){return v===undefined||v===null?'—':'$'+Number(v).toFixed(2)}
+function render(){const ideas=DATA.optionsPlay360Ideas||[];document.getElementById('gateStatus').textContent=DATA.gate?.status||'Needs check';document.getElementById('gateMsg').textContent=DATA.gate?.message||'';document.getElementById('opCount').textContent=ideas.length;document.getElementById('readyCount').textContent=ideas.filter(x=>x.status==='Ready').length;document.getElementById('blockedCount').textContent=ideas.filter(x=>x.status==='Blocked').length;const shown=ideas.filter(x=>filter==='all'||x.status===filter);document.getElementById('rows').innerHTML=shown.map(x=>`<tr><td><b>${x.ticker||''}</b><div class="small">${x.source||'OptionsPlay 360'}</div></td><td><span class="status ${x.status}">${x.status}</span></td><td>${x.score??'—'}</td><td>${x.broker||'—'}</td><td>${x.setup||''}<div class="small">Earnings: ${x.earningsDate||'—'} · Score source: ${x.scoreSource||'—'}</div></td><td>Bid ${money(x.bid)}<br>Ask ${money(x.ask)}<br>TP ${money(x.takeProfit)}</td><td class="reason">${x.blockedReason||'Manual review required before broker submit.'}</td></tr>`).join('')||'<tr><td colspan="7">No rows.</td></tr>'}
+function setFilter(f,btn){filter=f;document.querySelectorAll('.toolbar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render()}
+function showSection(id,btn){document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+load();
+</script>
+</body></html>
